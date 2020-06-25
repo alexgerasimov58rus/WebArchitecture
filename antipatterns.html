@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h3> 1. <i>"Членовредительство"</i> или <i>"Полтергейст"</i> из проекта курса в классе <i>Service\Order\Basket</i></h3>
+    <p> <b>Членовредительство</b>. Если в контроллере для осуществления заказа использовать функцию <b>checkout</b>, <br>
+        тогда класс будет заточен под конкретные способы проведения заказа: (способ оплаты - картой, скидка - нет, оповещение - по Email).<br>
+        <br>
+        <textarea name="" id="" cols="80" rows="13">
+public function checkout(): void
+{
+    $billing = new Card();
+
+    $discount = new NullObject();
+
+    $communication = new Email();
+
+    $security = new Security($this->session);
+
+    $this->checkoutProcess($discount, $billing, $security, $communication);
+}
+        </textarea>
+        <br>
+        <b>Полтергейст. </b> Тем не менее можно пользоваться напрямую ф-ей <b>checkoutProcess</b>, чтобы избежать членовредительства.<br>
+        Тогда функция <b>checkout</b> является здесь лишней (только запутывает меня, как пользователя этого класса)
+    </p>
+    <h3>2. <i>"Волшебная кнопка"</i>, полученная искусственным путем в классе <i>Service\Product\Product</i></h3>
+    <p> В методе <b>getAll</b> реализовал получение данных с БД не через репозиторий, а напрямую<br>
+        <textarea name="" id="" cols="90" rows="15">
+public function getAll(string $sortType): array
+{
+    $productList = [];
+    foreach ($this->getDataFromSource() as $item) {
+        $productList[] = new Entity\Product($item['id'], $item['name'], $item['price']);
+    }
+
+    return $productList;
+}
+
+private function getDataFromSource(array $search = [])
+{
+    ...
+}
+        </textarea>
+    </p>
+    <h3>3. <i>"Приватизация"</i></h3>
+    <p>
+        <textarea name="" id="" cols="60" rows="16">
+class Animal
+{
+    private $name;
+    public function setName($name){
+         $this->name = $name;
+    }
+}
+
+class Dog extends Animal
+{
+    // нет доступа к name, так сделать не выйдет
+    public function say(){
+        return $this->name . " говорит ГАВ";
+    }
+}
+        </textarea>
+    </p>
+        <h3>4. <i>"Интерфейсная солянка"</i></h3>
+        <p> Так неправильно <br>
+            <textarea name="" id="" cols="70" rows="20">
+interface Transport
+{
+    public function drive();
+    public function swim();
+}
+
+class Lada implements Transport
+{
+    public function drive(){ return "ДРЫНН"};
+    public function swim() { }
+}
+
+class BetMobile implements Transport
+{
+    public function drive(){ return "ДРЫНН"};
+    public function swim() { return "БУЛЬК"}
+}
+            </textarea>
+        </p>
+        <p>
+            Так правильно <br>
+            <textarea name="" id="" cols="80" rows="22">
+interface TransportEarth
+{
+    public function drive();
+}
+
+interface TransportWater
+{
+    public function swim();
+}
+
+class Lada implements TransportEarth
+{
+    public function drive(){ return "ДРЫНН"};
+}
+
+class BetMobile implements TransportEarth, TransportWater
+{
+    public function drive(){ return "ДРЫНН"};
+    public function swim() { return "БУЛЬК"}
+}
+            </textarea>
+        </p>
+    <h3>5. <i>"Золотой молоток"</i></h3>
+    <p>Предположим я оочень люблю наследование и сделал так <br>
+        <textarea name="" id="" cols="50" rows="26">
+class Point
+{
+    public $x;
+    public $y;
+
+    public function setPoint($x, $y){
+        $this->x = $x;
+        $this->y = $y;
+    }
+}
+
+class Line extends Point
+{
+    public $x2;
+    public $y2;
+
+    public function setPoint2($x2, $y2){
+        $this->x2 = $x2;
+        $this->y2 = $y2;
+    }
+}
+        </textarea>
+    </p>
+    <p> Но логичней бы было воспольоваться композицией <br>
+        <textarea name="" id="" cols="50" rows="26">
+class Point
+{
+    public $x;
+    public $y;
+
+    public function setPoint($x, $y){
+        $this->x = $x;
+        $this->y = $y;
+    }
+}
+
+class Line
+{
+    public $p1;
+    public $p2;
+
+    public function setPoint1(Point $p1){
+        $this->p1 = $p1;
+    }
+
+    public function setPoint2(Point $p2){
+        $this->p2 = $p2;
+    }
+}
+        </textarea>
+    </p>
+    <h3> 6. <i>Лазанья-Код</i></h3>
+    <p> Это мой html файл, потому что я к этому пункту уже потерялся в открывающих и закрывающий тегах </p>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
+</html>
